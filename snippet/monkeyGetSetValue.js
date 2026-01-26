@@ -1,0 +1,17 @@
+// @grant{GM_getValue}
+// @grant{GM_setValue}
+/**
+ * Récupère ou définit une valeur dans le stockage de Tampermonkey/Greasemonkey/Violentmonkey/etc.
+ * 
+ * @param {String} key La clé de la valeur à récupérer ou définir
+ * @param {String} value La valeur par défaut à définir si la clé n'existe pas (optionnel) 
+ * @returns {String} La valeur récupérée
+ */
+const monkeyGetSetValue = (key, value) => {
+    const storedValue = GM_getValue(key);
+    if (storedValue === undefined && value !== undefined) {
+        GM_setValue(key, value);
+        return value;
+    }
+    return storedValue;
+}
