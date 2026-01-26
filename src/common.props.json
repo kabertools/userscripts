@@ -1,0 +1,9 @@
+{
+    "namespace": "https://github.com/kabertools/userscripts/",
+    "author": "kaberly",
+    "homepage": "https://github.com/kabertools/userscripts/",
+    "supportURL": "https://github.com/kabertools/userscripts/",
+    "grant": [
+        "none"
+    ]
+}
