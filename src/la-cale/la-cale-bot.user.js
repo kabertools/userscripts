@@ -49,9 +49,14 @@ class LaCabot {
                                 props.serverDate = userElements[2].textContent
                                 props.clientDate = new Date().toISOString()
                             }
-                            if (messageElement) {
-                                props.message = messageElement.textContent
-                                props.messageElement = messageElement
+                            for (messageElement in [...line.children[1].children].slice(1)) {
+                                if (messageElement && messageElement.classList.contains('text-text-primary-medium')) {
+                                    props.message = messageElement.textContent
+                                    props.messageElement = messageElement
+                                }
+                                if (messageElement && messageElement.classList.contains('text-text-primary-muted')) {
+                                    props.reference = messageElement.textContent
+                                }
                             }
                         }
                         this._onMessage(props)
@@ -182,7 +187,10 @@ const addLogManagement = (laCabot) => {
             logs.day = props.clientDate.slice(0, 10)
             logs.idRange = idRange
         }
-        const messageLog = `[${props.serverDate}] ${props.iconGrade}${props.user}: ${props.message}`
+        let messageLog = `[${props.serverDate}] ${props.iconGrade}${props.user}: ${props.message}`
+        if (props.reference) {
+            messageLog += `    (> ${props.reference})`
+        }
         logs.messages.push({...props, idRange, messageLog})
         logs.isEmpty.setValue(false)
     })
