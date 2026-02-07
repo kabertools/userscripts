@@ -49,7 +49,7 @@ class LaCabot {
                                 props.serverDate = userElements[2].textContent
                                 props.clientDate = new Date().toISOString()
                             }
-                            for (messageElement in [...line.children[1].children].slice(1)) {
+                            for (let messageElement of [...line.children[1].children].slice(1)) {
                                 if (messageElement && messageElement.classList.contains('text-text-primary-medium')) {
                                     props.message = messageElement.textContent
                                     props.messageElement = messageElement
@@ -171,8 +171,11 @@ const addLogManagement = (laCabot) => {
         if (logs.messages.length > 0) {
             const content = logs.messages.map(m => m.messageLog).join('\n')
             console.log('Log for idRange', logs.idRange, '\n', content)
+            const idRangeFilename = logs.messages[0].idRange.replaceAll(':', '-')
+            const dayFilename = logs.day
             computeSha256(content, { encoding: 'utf-8' }).then((hash) => {
-                downloadData(`la-cale-log-${logs.day}--${logs.messages[0].idRange.replaceAll(':', '-')}x-${hash.slice(0, 10)}.txt`, content, { encoding: 'utf-8', mimetype: 'text/plain' })
+                const filename = `la-cale-log-${dayFilename}--${idRangeFilename}x-${hash.slice(0, 10)}.txt`
+                downloadData(filename, content, { encoding: 'utf-8', mimetype: 'text/plain' })
             })
         }
         logs.messages = []
