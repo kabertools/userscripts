@@ -5,6 +5,7 @@
 // @import{downloadData}
 // @import{HookableValue}
 // @import{computeSha256}
+// @import{registerLocationChange}
 
 class LaCabot {
     constructor() {
