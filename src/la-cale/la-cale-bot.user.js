@@ -183,7 +183,7 @@ const addLogManagement = (laCabot) => {
             logs.idRange = idRange
         }
         const messageLog = `[${props.serverDate}] ${props.iconGrade}${props.user}: ${props.message}`
-        logs.messages.push({...props, messageLog})
+        logs.messages.push({...props, idRange, messageLog})
         logs.isEmpty.setValue(false)
     })
 
