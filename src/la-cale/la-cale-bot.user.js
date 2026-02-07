@@ -6,7 +6,7 @@
 // @import{getSubElements}
 // @import{registerDomNodeMutated}
 // @import{registerDomNodeMutatedUnique}
-// @import{downloadText}
+// @import{downloadData}
 // @import{HookableValue}
 // @import{computeSha256}
 
