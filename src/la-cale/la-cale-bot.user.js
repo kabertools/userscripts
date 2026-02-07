@@ -164,10 +164,10 @@ const addLogManagement = (laCabot) => {
 
     const emptyLogs = () => {
         if (logs.messages.length > 0) {
-            console.log('Log for idRange', logs.idRange, '\n', logs.messages.join('\n'))
-            const content = logs.messages.join('\n')
+            const content = logs.messages.map(m => m.messageLog).join('\n')
+            console.log('Log for idRange', logs.idRange, '\n', content)
             computeSha256(content, { encoding: 'utf-8' }).then((hash) => {
-                downloadData(`la-cale-log-${logs.day}--${logs.idRange.replaceAll(':', '-')}x-${hash.slice(0, 10)}.txt`, content, { encoding: 'utf-8', mimetype: 'text/plain' })
+                downloadData(`la-cale-log-${logs.day}--${logs.messages[0].idRange.replaceAll(':', '-')}x-${hash.slice(0, 10)}.txt`, content, { encoding: 'utf-8', mimetype: 'text/plain' })
             })
         }
         logs.messages = []
@@ -182,7 +182,8 @@ const addLogManagement = (laCabot) => {
             logs.day = props.clientDate.slice(0, 10)
             logs.idRange = idRange
         }
-        logs.messages.push(`[${props.serverDate}] ${props.iconGrade}${props.user}: ${props.message}`)
+        const messageLog = `[${props.serverDate}] ${props.iconGrade}${props.user}: ${props.message}`
+        logs.messages.push({...props, messageLog})
         logs.isEmpty.setValue(false)
     })
 
