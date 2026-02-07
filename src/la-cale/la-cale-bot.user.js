@@ -1,7 +1,3 @@
-// ==UserScript==
-// @match        https://la-cale.space/taverne
-// ==/UserScript==
-
 // @import{getElements}
 // @import{getSubElements}
 // @import{registerDomNodeMutated}
@@ -16,13 +12,15 @@ class LaCabot {
         this._version = '0.0.1'
         this._onMessageCallbacks = []
         this._onInstalledCallbacks = []
+        this._onUninstalledCallbacks = []
         this._titleZone = null
         this._contentZone = null
         this._writeZone = null
+        this._toClean = []
     }
 
     install() {
-        registerDomNodeMutatedUnique(() => getElements('main>div>div'), (element) => {
+        this._toClean.push(registerDomNodeMutatedUnique(() => getElements('main>div>div'), (element) => {
             console.log({ element, ecl: element?.children?.length })
             if (element && element.children.length === 3) {
                 console.log({ c: element.children })
@@ -34,7 +32,7 @@ class LaCabot {
                 this._titleZone = titleZone
                 this._contentZone = contentZone
                 this._writeZone = writeZone
-                registerDomNodeMutatedUnique(() => getSubElements(this._contentZone, 'div.h-full.overflow-y-auto>div.gap-3').reverse(), (line) => {
+                this._toClean.push(registerDomNodeMutatedUnique(() => getSubElements(this._contentZone, 'div.h-full.overflow-y-auto>div.gap-3').reverse(), (line) => {
                     // console.log({line})
                     if (line.children.length == 3) {
                         const props = {}
@@ -59,26 +57,42 @@ class LaCabot {
                     }
 
                     return true
-                })
+                }))
                 this._onInstalled();
                 return true
             }
             return false
-        })
+        }))
+        return () => {
+            this._onUninstalled()
+            for (const clean of this._toClean) {
+                clean()
+            }
+        }
     }
 
     registerOnMessage(callback) {
         this._onMessageCallbacks.push(callback)
-        return () => {
+        const result = () => {
             this._onMessageCallbacks.splice(this._onMessageCallbacks.indexOf(callback), 1)
         }
+        return result
     }
 
     registerOnInstalled(callback) {
         this._onInstalledCallbacks.push(callback)
-        return () => {
+        const result = () => {
             this._onInstalledCallbacks.splice(this._onInstalledCallbacks.indexOf(callback), 1)
         }
+        return result
+    }
+
+    registerOnUninstalled(callback) {
+        this._onUninstalledCallbacks.push(callback)
+        const result = () => {
+            this._onUninstalledCallbacks.splice(this._onUninstalledCallbacks.indexOf(callback), 1)
+        }
+        return result
     }
 
     _onMessage(props) {
@@ -90,6 +104,12 @@ class LaCabot {
 
     _onInstalled() {
         for (const callback of this._onInstalledCallbacks) {
+            callback()
+        }
+    }
+
+    _onUninstalled() {
+        for (const callback of this._onUninstalledCallbacks) {
             callback()
         }
     }
@@ -146,7 +166,7 @@ const addLogManagement = (laCabot) => {
             console.log('Log for idRange', logs.idRange, '\n', logs.messages.join('\n'))
             const content = logs.messages.join('\n')
             computeSha256(content, { encoding: 'utf-8' }).then((hash) => {
-                downloadData(`la-cale-log-${logs.day}--${logs.idRange.replaceAll(':', '-')}x-${hash.slice(0,10)}.txt`, content, { encoding: 'utf-8', mimetype: 'text/plain' })
+                downloadData(`la-cale-log-${logs.day}--${logs.idRange.replaceAll(':', '-')}x-${hash.slice(0, 10)}.txt`, content, { encoding: 'utf-8', mimetype: 'text/plain' })
             })
         }
         logs.messages = []
@@ -176,21 +196,41 @@ const addLogManagement = (laCabot) => {
             buttonClean.disabled = newValue;
         });
     });
+
+    laCabot.registerOnUninstalled(() => {
+        emptyLogs();
+    });
 }
 
 const main = async () => {
-    const laCabot = new LaCabot()
-    laCabot.install()
-    laCabot.registerOnMessage((props) => {
-        console.log('New message received:', props)
+    let lastLocation = null
+    let unistallLaCabot = null
+    registerLocationChange((location) => {
+        if (location.pathname === '/taverne' && location.href !== lastLocation) {
+            lastLocation = location
+            if (unistallLaCabot) {
+                unistallLaCabot()
+                unistallLaCabot = null
+            }
+            const laCabot = new LaCabot()
+            unistallLaCabot = laCabot.install()
+            laCabot.registerOnMessage((props) => {
+                console.log('New message received:', props)
+            })
+            window.laCabot = laCabot
+
+            laCabot.registerOnInstalled(() => {
+                console.log('LaCabot installed')
+            });
+
+            addLogManagement(laCabot)
+        } else if (location.pathname !== '/taverne' && unistallLaCabot) {
+            unistallLaCabot()
+            unistallLaCabot = null
+
+        }
+        lastLocation = location
     })
-    window.laCabot = laCabot
-
-    laCabot.registerOnInstalled(() => {
-        console.log('LaCabot installed')
-    });
-
-    addLogManagement(laCabot)
 }
 
 main()

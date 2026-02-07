@@ -1,0 +1,6 @@
+{
+    "match": [
+        "https://la-cale.space/*"
+    ],
+    "iconFromDomain" : "la-cale.space"
+}
