@@ -8,6 +8,7 @@
 // @import{registerDomNodeMutatedUnique}
 // @import{downloadText}
 // @import{HookableValue}
+// @import{computeSha256}
 
 class LaCabot {
     constructor() {
@@ -33,7 +34,7 @@ class LaCabot {
                 this._titleZone = titleZone
                 this._contentZone = contentZone
                 this._writeZone = writeZone
-                registerDomNodeMutatedUnique(() => getSubElements(this._contentZone, 'div.h-full.overflow-y-auto>div'), (line) => {
+                registerDomNodeMutatedUnique(() => getSubElements(this._contentZone, 'div.h-full.overflow-y-auto>div.gap-3').reverse(), (line) => {
                     // console.log({line})
                     if (line.children.length == 3) {
                         const props = {}
@@ -143,7 +144,10 @@ const addLogManagement = (laCabot) => {
     const emptyLogs = () => {
         if (logs.messages.length > 0) {
             console.log('Log for idRange', logs.idRange, '\n', logs.messages.join('\n'))
-            downloadText(`la-cale-log-${logs.day}--${logs.idRange.replaceAll(':', '-')}x.txt`, logs.messages.join('\n'))
+            const content = logs.messages.join('\n')
+            computeSha256(content, { encoding: 'utf-8' }).then((hash) => {
+                downloadData(`la-cale-log-${logs.day}--${logs.idRange.replaceAll(':', '-')}x-${hash.slice(0,10)}.txt`, content, { encoding: 'utf-8', mimetype: 'text/plain' })
+            })
         }
         logs.messages = []
         logs.isEmpty.setValue(true)

@@ -13,7 +13,7 @@ const downloadData = (filename, data, options) => {
     if (!options) {
         options = {}
     }
-    const { mimetype, encoding } = options
+    let { mimetype, encoding } = options
     if (!mimetype) {
         mimetype = 'application/octet-stream'
     }
