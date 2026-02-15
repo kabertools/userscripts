@@ -77,7 +77,11 @@ const installEasyUpload = async () => {
 
     console.log({ quaiZone, emplacementZone, titreZone, prezZone })
 
-    const prezButton = getSubElements(prezZone, 'button')[0]
+    const prezButtons = getSubElements(prezZone, '.flex.items-center.gap-1 > button')
+    if (prezButtons.length !== 4) {
+      throw new Error(`Impossible de trouver les boutons de prez (trouvé ${prezButtons.length} éléments, attendu 4)`);
+    }
+    const prezButton = prezButtons[1]
 
     if (!prezButton) {
         throw new Error(`Impossible de trouver le bouton de présentation`);
