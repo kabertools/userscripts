@@ -39,8 +39,11 @@ const uninstallAll = () => {
 }
 
 const getPrezContent = async (prezButton, prezZone) => {
+    prezButton.click();
+    await delay(0)
     let prezTextarea = getSubElements(prezZone, 'textarea')[0]
     if (!prezTextarea) {
+        await delay(1000);
         prezButton.click();
         await delay(0);
         prezTextarea = getSubElements(prezZone, 'textarea')[0]
@@ -87,6 +90,12 @@ const installEasyUpload = async () => {
         throw new Error(`Impossible de trouver le bouton de présentation`);
     }
 
+    const prezShowContentButton = prezButtons[3]
+
+    if (!prezShowContentButton) {
+        throw new Error(`Impossible de trouver le bouton d'affichage de la présentation`);
+    }
+
     let prezTextarea = await getPrezContent(prezButton, prezZone);
 
     const titreInput = getSubElements(titreZone, 'input')[0]
@@ -131,7 +140,7 @@ const installEasyUpload = async () => {
                     const prezContent = await prezFile.text();
                     prezTextarea = await getPrezContent(prezButton, prezZone);
                     setReactTextareaValue(prezTextarea, prezContent);
-                    await showPrezContent(prezButton, prezZone);
+                    await showPrezContent(prezShowContentButton, prezZone);
                 }
                 if (tagsFile !== null) {
                     const tagsContent = await tagsFile.text();
@@ -153,14 +162,6 @@ const installEasyUpload = async () => {
                         const groupButtons = getElements('.group.cursor-pointer')
                         groupButtons.filter(x => tags.slice(2).map(x => x.toLocaleUpperCase()).indexOf(x.textContent.toLocaleUpperCase()) >= 0).forEach(x => x.click())
                     }
-
-                    // quaiZone.querySelectorAll('button')[0].click()
-                    // opts = [...[...document.querySelectorAll('[data-radix-popper-content-wrapper]')][0].querySelectorAll('[role=option]')]
-                    // opts.filter(x=>x.textContent === 'E-books')[0].dispatchEvent(new Event('click',{bubbles:true}))
-                    // emplacementZone.querySelectorAll('button')[0].click()
-                    // opts = [...[...document.querySelectorAll('[data-radix-popper-content-wrapper]')][0].querySelectorAll('[role=option]')]
-                    // opts.filter(x=>x.textContent === 'Presse')[0].dispatchEvent(new Event('click',{bubbles:true}))
-                    // [...document.querySelectorAll('.group.cursor-pointer')].filter(x=>['Actualités', 'Journaux','Français','CBZ'].indexOf(x.textContent)>=0).forEach(x=>x.click())
                 }
             }
         },
