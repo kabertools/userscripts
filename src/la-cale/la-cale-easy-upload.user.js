@@ -159,6 +159,8 @@ const installEasyUpload = async () => {
                         options = getElements('[data-radix-popper-content-wrapper] [role=option]')
                         options.filter(x => x.textContent === tags[1])[0].dispatchEvent(new Event('click', { bubbles: true }))
                         await delay(0)
+                        const groupButtonsToDisable = getElements('.group.cursor-pointer.border-brand-primary')
+                        groupButtonsToDisable.forEach(x => x.click())
                         const groupButtons = getElements('.group.cursor-pointer')
                         groupButtons.filter(x => tags.slice(2).map(x => x.toLocaleUpperCase()).indexOf(x.textContent.toLocaleUpperCase()) >= 0).forEach(x => x.click())
                     }
