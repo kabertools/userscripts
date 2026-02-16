@@ -1,0 +1,5 @@
+@-moz-document regexp("^https://(www.)?la-cale.space.*") {
+    .animate-in {
+        display: none;
+    }
+}
