@@ -1,0 +1,18 @@
+/* ==UserStyle==
+@name        la-cale-no-animated-message
+@namespace   https://github.com/kabertools/userscripts/
+@version     20260216-205956-ac03314
+@description la-cale-no-animated-message
+@author      kaberly
+@homepage    https://github.com/kabertools/userscripts/
+@supportURL  https://github.com/kabertools/userscripts/
+@match       https://la-cale.space/*
+@icon        https://www.google.com/s2/favicons?sz=64&domain=la-cale.space
+@grant       none
+==/UserStyle== */
+
+@-moz-document regexp("^https://(www.)?la-cale.space.*") {
+    body>div.animate-in {
+        display: none;
+    }
+}
