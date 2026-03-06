@@ -42,11 +42,12 @@ class LaCabot {
                             const messageElement = line.children[1].children[1]
                             if (userElements.length >= 3) {
                                 props.user = userElements[0].textContent
-                                const fullGradeText = userElements[1].textContent
+                                // userElements[1] is the team
+                                const fullGradeText = userElements[userElements.length-2].textContent
                                 const fullGradeSep = fullGradeText.indexOf(' ')
                                 props.grade = fullGradeText.slice(fullGradeSep + 1)
                                 props.iconGrade = fullGradeText.slice(0, fullGradeSep)
-                                props.serverDate = userElements[2].textContent
+                                props.serverDate = userElements[userElements.length-1].textContent
                                 props.clientDate = new Date().toISOString()
                             }
                             for (let messageElement of [...line.children[1].children].slice(1)) {
