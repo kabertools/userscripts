@@ -44,11 +44,10 @@ class LaCabot {
                                 let index = 0
                                 props.user = userElements[index++].textContent
                                 const nextElement = userElements[index]
-                                if (nextElement.tagName === 'a' && nextElement.href.includes('/teams/')) {
+                                if (nextElement.tagName === 'A' && nextElement.href.includes('/teams/')) {
                                     props.team = nextElement.textContent
                                     index++
                                 }
-                                // userElements[1] is the team
                                 const fullGradeText = userElements[index++].textContent
                                 const fullGradeSep = fullGradeText.indexOf(' ')
                                 props.grade = fullGradeText.slice(fullGradeSep + 1)
