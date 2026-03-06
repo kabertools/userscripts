@@ -43,9 +43,10 @@ class LaCabot {
                             if (userElements.length >= 3) {
                                 let index = 0
                                 props.user = userElements[index++].textContent
-                                const nextElement = userElements[index++]
+                                const nextElement = userElements[index]
                                 if (nextElement.tagName === 'a' && nextElement.href.includes('/teams/')) {
                                     props.team = nextElement.textContent
+                                    index++
                                 }
                                 // userElements[1] is the team
                                 const fullGradeText = userElements[index++].textContent
