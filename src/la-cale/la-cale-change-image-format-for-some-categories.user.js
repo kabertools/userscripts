@@ -5,8 +5,8 @@
 // @import{RegistrationManager}
 // @import{monkeyGetSetValue}
 
-const categoriesToChangeVertical = monkeyGetSetValue('categoriesToChangeVertical', ['BD','Comics','Divers','Livres','Mangas','Presse'])
-const categoriesToChangeSquare = monkeyGetSetValue('categoriesToChangeSquare', ['BD','Comics','Divers','Livres','Mangas','Presse'])
+const categoriesToChangeVertical = monkeyGetSetValue('categoriesToChangeVertical', ['BD','Comics','Divers','Livres','Mangas','Presse','Audiobooks'])
+const categoriesToChangeSquare = monkeyGetSetValue('categoriesToChangeSquare', ['Musique','Podcast'])
 
 const categoriesToChange = [
     {
