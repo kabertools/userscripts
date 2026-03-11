@@ -2,11 +2,15 @@
 // @import{getSubElements}
 // @import{registerDomNodeMutatedUnique}
 // @import{registerLocationChange}
+// @import{RegistrationManager}
 
 const main = async () => {
+    const registrationManager = new RegistrationManager()
     registerLocationChange((location) => {
+        registrationManager.cleanupAll()
+
         if (location.pathname === '/taverne') {
-            registerDomNodeMutatedUnique(
+            registrationManager.onRegistration(registerDomNodeMutatedUnique(
                 () => getElements('.flex-1.overflow-hidden'),
                 (node) => {
                     const userMessages = getSubElements(node, '[href="/profile/Musardine"]')
@@ -24,7 +28,7 @@ const main = async () => {
                         }
                     }
                 }
-            )
+            ))
         }
     })
 }
